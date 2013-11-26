@@ -1,0 +1,148 @@
+﻿<Window x:Class="SpotifyRemote.MainWindow" WindowStyle="None"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" x:Name="mainWindow"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" AllowsTransparency="True" UseLayoutRounding="True"
+        Title="MainWindow" Height="225" Width="226" ResizeMode="NoResize" ShowInTaskbar="False" MouseEnter="mainWindow_MouseEnter_1" MouseLeave="mainWindow_MouseLeave_1">
+    <Window.Background>
+        <ImageBrush ImageSource="spotify-background.png" />
+    </Window.Background>
+    <Window.Resources>
+        <Style x:Key="MyButtonStyle" TargetType="Button">
+            <Setter Property="OverridesDefaultStyle" Value="True"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Name="border" 
+                            BorderThickness="0"
+                            Background="{TemplateBinding Background}">
+                            <ContentPresenter Name="button"  HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="BorderBrush" Value="Black" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Margin" Value="2" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="AnimationImage" TargetType="{x:Type Image}">
+            <Setter Property="RenderTransform">
+                <Setter.Value>
+                    <RotateTransform Angle="0" CenterX="75" CenterY="75" />
+                </Setter.Value>
+            </Setter>
+
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="true">
+                    <Trigger.EnterActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.Angle"
+                        From="0" To="360" Duration="0:0:1.5" RepeatBehavior="Forever" />
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </Trigger.EnterActions>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Storyboard x:Key="ShowControlBar">
+            <DoubleAnimation
+            From="0" To="1" 
+            AutoReverse="False"
+            Storyboard.TargetName="controlBar"
+            Storyboard.TargetProperty="Opacity"
+            Duration="0:0:0.300" />
+        </Storyboard>
+
+        <Storyboard x:Key="HideControlBar">
+            <DoubleAnimation
+            From="1" To="0" 
+            AutoReverse="False"
+            Storyboard.TargetName="controlBar"
+            Storyboard.TargetProperty="Opacity"
+            Duration="0:0:0.300" />
+        </Storyboard>
+
+        <Storyboard x:Key="ShowVolume">
+            <DoubleAnimation
+            From="0" To="1" 
+            AutoReverse="False"
+            Storyboard.TargetName="VolumeControl"
+            Storyboard.TargetProperty="Opacity"
+            Duration="0:0:0.300" />
+        </Storyboard>
+
+        <Storyboard x:Key="HideVolume">
+            <DoubleAnimation
+            From="1" To="0" 
+            AutoReverse="False"
+            Storyboard.TargetName="VolumeControl"
+            Storyboard.TargetProperty="Opacity"
+            Duration="0:0:0.300" />
+        </Storyboard>
+
+    </Window.Resources>
+    <StackPanel>
+        <Grid x:Name="mainGrid" Margin="15, 13, 19, 14">
+            <Grid>
+                <Grid.Background>
+                    <ImageBrush x:Name="gridBackground" />
+                </Grid.Background>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="60" x:Name="coverRow" />
+                    <RowDefinition Height="60" />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Image Height="197" Grid.RowSpan="5" Width="197" RenderOptions.BitmapScalingMode="HighQuality" x:Name="coverArt" />
+                <Border Grid.Row="3" HorizontalAlignment="Center" Grid.ColumnSpan="4" Width="197" Height="40" VerticalAlignment="Bottom" Background="Black" Opacity="0.8">
+                    <StackPanel>
+                        <TextBlock x:Name="NowPlayingArtist" Height="20" FontWeight="Bold" Width="190" Foreground="White" Padding="5,3,0,0" />
+                        <TextBlock x:Name="NowPlayingTitle" Height="20" Width="190" Foreground="White" Padding="5,0,0,0" />
+                    </StackPanel>
+                </Border>
+                <ProgressBar x:Name="progressBar" BorderBrush="Transparent" Background="Transparent" Grid.Row="2" Grid.ColumnSpan="4" Height="3" Margin="0,0,0,26" />
+                <Grid Grid.Row="1" Name="controlBar" Opacity="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="35" />
+                        <ColumnDefinition Width="60" />
+                        <ColumnDefinition Width="35"  />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Button Style="{StaticResource MyButtonStyle}" Click="PlayPauseClick" Grid.Column="2" Width="51" Height="52">
+                        <Image Source="Play.png" x:Name="playPause" />
+                    </Button>
+                    <Button Style="{StaticResource MyButtonStyle}" HorizontalAlignment="Left" Click="NextClick" Grid.Column="3" Width="35" Height="35">
+                        <Image Source="forward.png" />
+                    </Button>
+                    <Button Style="{StaticResource MyButtonStyle}" HorizontalAlignment="Right" Click="PrevClick" Grid.Column="1" Width="35" Height="35">
+                        <Image Source="rewind.png" />
+                    </Button>
+                </Grid>
+            </Grid>
+            <Button x:Name="VolumeControl" Style="{StaticResource MyButtonStyle}" Click="ToggleSoundBar" Opacity="0" VerticalAlignment="Bottom" HorizontalAlignment="Right"  Width="30" Height="30" Margin="0,0,5,5">
+                <Image Width="22" Height="16" Source="speaker.png" />
+            </Button>
+
+            <Button Style="{StaticResource MyButtonStyle}" Click="PinClicked" Margin="5,5,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Row="0" Width="15" Height="15">
+                <Image x:Name="pin" Source="unpin.png" />
+            </Button>
+            <Border Grid.Column="0" Grid.Row="0" Margin="145,50,0,10" Height="80" Background="Black" Width="25" CornerRadius="5,5,0,0" x:Name="soundBar" Visibility="Hidden"  MouseLeave="MouseLeaveSoundBar">
+                <Slider Width="17" Height="60" Value="30" Orientation="Vertical"  x:Name="volume" Thumb.DragDelta="volume_DragDelta_1"  Thumb.DragCompleted="volume_DragCompleted_1"  >
+                </Slider>
+            </Border>
+        </Grid>
+        <Button Style="{StaticResource MyButtonStyle}" Click="CloseClicked" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-225,1,0" Width="30" Height="30">
+            <Image Source="close.png" />
+        </Button>
+        <Image x:Name="Spinner" Source="spinner.png" Width="150" Height="150" Style="{StaticResource AnimationImage}" Margin="20, -220, 20, 0" Visibility="Hidden" />
+    </StackPanel>
+</Window>

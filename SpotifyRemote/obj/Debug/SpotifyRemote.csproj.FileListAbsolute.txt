@@ -1,0 +1,15 @@
+C:\Users\mikae_000\Documents\GitHub\SpotifyMiniPlayer\SpotifyRemote\bin\Debug\SpotifyRemote.exe.config
+C:\Users\mikae_000\Documents\GitHub\SpotifyMiniPlayer\SpotifyRemote\obj\Debug\SpotifyRemote.csprojResolveAssemblyReference.cache
+C:\Users\mikae_000\Documents\GitHub\SpotifyMiniPlayer\SpotifyRemote\obj\Debug\MainWindow.baml
+C:\Users\mikae_000\Documents\GitHub\SpotifyMiniPlayer\SpotifyRemote\obj\Debug\MainWindow.g.cs
+C:\Users\mikae_000\Documents\GitHub\SpotifyMiniPlayer\SpotifyRemote\obj\Debug\App.g.cs
+C:\Users\mikae_000\Documents\GitHub\SpotifyMiniPlayer\SpotifyRemote\obj\Debug\SpotifyRemote_MarkupCompile.cache
+C:\Users\mikae_000\Documents\GitHub\SpotifyMiniPlayer\SpotifyRemote\obj\Debug\SpotifyRemote.g.resources
+C:\Users\mikae_000\Documents\GitHub\SpotifyMiniPlayer\SpotifyRemote\obj\Debug\SpotifyRemote.csproj.GenerateResource.Cache
+C:\Users\mikae_000\Documents\GitHub\SpotifyMiniPlayer\SpotifyRemote\bin\Debug\SpotifyRemote.exe
+C:\Users\mikae_000\Documents\GitHub\SpotifyMiniPlayer\SpotifyRemote\bin\Debug\SpotifyRemote.pdb
+C:\Users\mikae_000\Documents\GitHub\SpotifyMiniPlayer\SpotifyRemote\bin\Debug\Newtonsoft.Json.dll
+C:\Users\mikae_000\Documents\GitHub\SpotifyMiniPlayer\SpotifyRemote\bin\Debug\Slyngelstat.Spotify.LocalApi.dll
+C:\Users\mikae_000\Documents\GitHub\SpotifyMiniPlayer\SpotifyRemote\obj\Debug\SpotifyRemote.Properties.Resources.resources
+C:\Users\mikae_000\Documents\GitHub\SpotifyMiniPlayer\SpotifyRemote\obj\Debug\SpotifyRemote.exe
+C:\Users\mikae_000\Documents\GitHub\SpotifyMiniPlayer\SpotifyRemote\obj\Debug\SpotifyRemote.pdb
