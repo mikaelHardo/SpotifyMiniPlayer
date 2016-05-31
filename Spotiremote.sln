@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpotifyRemote", "SpotifyRemote\SpotifyRemote.csproj", "{9B5B49DF-D945-4222-9217-11435342FA98}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spotiremote", "Spotiremote\Spotiremote.csproj", "{9B5B49DF-D945-4222-9217-11435342FA98}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

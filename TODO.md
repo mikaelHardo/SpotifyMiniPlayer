@@ -1,3 +1,8 @@
+
+!!! Update users for TBS !!!
+
+
+
 Missing in themes
 
 * Theme
@@ -10,7 +15,6 @@ Missing in themes
 ** "now Playing"
 *** Width
 *** Text color
-*** Fix scroller
 ** States (Hover)
 ** Progress
 *** Color
@@ -20,3 +24,5 @@ Missing in themes
 ** Set hotkeys
 ** Start Spotify on start
 ** Close spotify on close
+
+2100TamigoTamigo!!

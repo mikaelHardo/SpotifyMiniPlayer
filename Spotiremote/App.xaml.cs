@@ -6,7 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Windows;
 
-namespace SpotifyRemote
+namespace Spotiremote
 {
     /// <summary>
     /// Interaction logic for App.xaml

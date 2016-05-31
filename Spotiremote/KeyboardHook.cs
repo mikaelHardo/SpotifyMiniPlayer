@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace SpotifyRemote
+namespace Spotiremote
 {
     //Stolen from here http://stackoverflow.com/a/27309185 (Thx AaronLS)
     public sealed class KeyboardHook : IDisposable

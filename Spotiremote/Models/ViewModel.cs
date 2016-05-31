@@ -6,9 +6,9 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using SpotifyRemote.Annotations;
+using Spotiremote.Annotations;
 
-namespace SpotifyRemote.Models
+namespace Spotiremote.Models
 {
     public class BaseModel : INotifyPropertyChanged
     {

@@ -1,10 +1,8 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -21,24 +19,20 @@ using System.Xml.Serialization;
 using SpotifyAPI.Local;
 using SpotifyAPI.Local.Enums;
 using SpotifyAPI.Local.Models;
-using SpotifyRemote.Annotations;
-using SpotifyRemote.Models;
+using Spotiremote.Annotations;
+using Spotiremote.Models;
 using Button = System.Windows.Forms.Button;
 using MouseEventArgs = System.Windows.Input.MouseEventArgs;
 
 
-namespace SpotifyRemote
+namespace Spotiremote
 {
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
         private readonly DispatcherTimer _dispatcherTimer;
 
-        private DateTime _pauseEnding;
-
-        private string _title;
-        private bool _isDragging;
         private DateTime _songStart;
-        private readonly System.Windows.Forms.NotifyIcon _myNotifyIcon;
+        private readonly NotifyIcon _myNotifyIcon;
         private SpotifyLocalAPI _spotify;
         private KeyboardHook _hook = new KeyboardHook();
         private SettingsModel _settings = new SettingsModel();
@@ -55,11 +49,6 @@ namespace SpotifyRemote
                 OnPropertyChanged();
             }
         }
-
-        private const int WM_APPCOMMAND = 0x319;
-        private const int APPCOMMAND_MEDIA_PLAY_PAUSE = 0xE0000;
-        private const int APPCOMMAND_NEXT = 720896;
-        private const int APPCOMMAND_PREV = 786432;
 
         public Process Spotify
         {
@@ -106,6 +95,8 @@ namespace SpotifyRemote
 
             };
 
+            Loaded += Window_Loaded;
+
             InitializeComponent();
 
             StartMarquee();
@@ -123,46 +114,6 @@ namespace SpotifyRemote
             _hook.RegisterHotKey(ModifierKeys.Control | ModifierKeys.Shift, Keys.Left);
             _hook.RegisterHotKey(ModifierKeys.Control | ModifierKeys.Shift, Keys.Space);
 
-            _spotify = new SpotifyLocalAPI();
-
-            if (!SpotifyLocalAPI.IsSpotifyRunning())
-            {
-                SpotifyLocalAPI.RunSpotify();
-                Thread.Sleep(5000);
-            }
-
-            if (!SpotifyLocalAPI.IsSpotifyWebHelperRunning())
-            {
-                SpotifyLocalAPI.RunSpotifyWebHelper();
-                Thread.Sleep(4000);
-            }
-
-            _spotify.OnPlayStateChange += (sender, args) =>
-            {
-                this.Dispatcher.Invoke(() =>
-                {
-                    UpdatePlayState(args.Playing);
-                });
-            };
-
-            _spotify.OnTrackChange += OnTrackChanged; //UpdateInfo(args.NewTrack) ;
-            _spotify.OnTrackTimeChange += (sender, args) =>
-            {
-                this.Dispatcher.Invoke(() =>
-                {
-                    UpdateTime(args.TrackTime);
-                });
-            };
-            //           _spotify.OnVolumeChange += _spotify_OnVolumeChange;
-            _spotify.SynchronizingObject = new Button();
-
-            _spotify.Connect();
-            _spotify.ListenForEvents = true;
-
-            var status = _spotify.GetStatus();
-
-            UpdateInfo(status.Track, status.Playing);
-            UpdatePlayState(status.Playing);
 
             _dispatcherTimer = new DispatcherTimer();
             //_dispatcherTimer.Tick += dispatcherTimer_Tick;
@@ -177,6 +128,68 @@ namespace SpotifyRemote
             _myNotifyIcon.Icon = iconHandle;
             //ShowInTaskbar = true;
             _myNotifyIcon.Visible = true;
+        }
+
+        private async void Window_Loaded(object s, RoutedEventArgs e)
+        {
+            _spotify = new SpotifyLocalAPI();
+
+            if (!SpotifyLocalAPI.IsSpotifyRunning())
+            {
+                SpotifyLocalAPI.RunSpotify();
+            }
+
+            if (!SpotifyLocalAPI.IsSpotifyWebHelperRunning())
+            {
+                SpotifyLocalAPI.RunSpotifyWebHelper();
+            }
+
+            _spotify.OnPlayStateChange += (sender, args) =>
+            {
+                this.Dispatcher.Invoke(() =>
+                {
+                    UpdatePlayState(args.Playing);
+                });
+            };
+
+            _spotify.OnTrackChange += OnTrackChanged;
+            _spotify.OnTrackTimeChange += (sender, args) =>
+            {
+                this.Dispatcher.Invoke(() =>
+                {
+                    UpdateTime(args.TrackTime);
+                });
+            };
+            
+            //           _spotify.OnVolumeChange += _spotify_OnVolumeChange;
+            _spotify.SynchronizingObject = new Button();
+
+            StatusResponse status = null;
+
+            for (int i = 0; i < 10; i++)
+            {
+                _spotify.Connect();
+                _spotify.ListenForEvents = true;
+
+                status = _spotify.GetStatus();
+
+                if (status == null)
+                {
+                    await Task.Delay(1000);
+                    continue;
+                }
+
+                break;
+            }
+
+            if (status == null)
+            {
+                return;
+            }
+
+            UpdateInfo(status.Track, status.Playing);
+            UpdatePlayState(status.Playing);
+
         }
 
         private void StartMarquee()
@@ -280,62 +293,13 @@ namespace SpotifyRemote
         [DllImport("user32.dll")]
         public static extern IntPtr PostMessage(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
 
-        //private void dispatcherTimer_Tick(object sender, EventArgs e)
-        //{
-        //    // we are having a tick every 50ms, and we want to move the hole width in 3 sec,
-        //    // we therefore take the widt and divide it into 20 chuncks
-
-
-
-        //    // The ticker is paused right now
-        //    if (_pauseEnding != null && _pauseEnding > DateTime.Now)
-        //    {
-        //        return;
-        //    }
-
-        //    var margin = NowPlayingText.Margin;
-
-        //    var width = NowPlayingText.ActualWidth;
-
-        //    var tick = width/60;
-
-        //    // The title fits inside the box
-        //    if (margin.Left <= -200)
-        //    {
-        //        NowPlayingText.Margin = new Thickness(0);
-        //        return;
-        //    }
-
-        //    // Lock the text for one second
-        //    if (margin.Left == 0)
-        //    {
-        //        // pause the ticker in 5 seconds
-        //        _pauseEnding = DateTime.Now.AddSeconds(5);
-        //    }
-
-        //    var overflow = width - 200 + 100;
-
-        //    // we are at the end, lets add a small delay here to
-        //    if (margin.Left == -overflow + 1)
-        //    {
-        //        _pauseEnding = DateTime.Now.AddSeconds(1.5);
-        //    }
-
-        //    if (margin.Left < -overflow)
-        //    {
-        //        margin.Left = 0;
-        //    }
-        //    else
-        //    {
-        //        margin.Left -= tick;
-        //    }
-
-        //    NowPlayingText.Margin = margin;
-
-        //}
-
         private void UpdateInfo(Track track, bool isPlaying)
         {
+            if (track == null)
+            {
+                return;
+            }
+
             NowPlaying.Text = track.ArtistResource.Name + " - " + track.TrackResource.Name;
 
             AlbumArt.Source = new BitmapImage(new Uri(track.GetAlbumArtUrl(AlbumArtSize.Size160)));
@@ -347,17 +311,24 @@ namespace SpotifyRemote
 
         private void PlayPauseClick(object sender, RoutedEventArgs e)
         {
-            SendMessageW(Handle, WM_APPCOMMAND, Handle, (IntPtr)APPCOMMAND_MEDIA_PLAY_PAUSE);
+            if (_spotify.GetStatus().Playing)
+            {
+                _spotify.Pause();
+            }
+            else
+            {
+                _spotify.Play();
+            }
         }
 
         private void NextClick(object sender, RoutedEventArgs e)
         {
-            SendMessageW(Handle, WM_APPCOMMAND, Handle, (IntPtr)APPCOMMAND_NEXT);
+            _spotify.Skip();
         }
 
         private void PrevClick(object sender, RoutedEventArgs e)
         {
-            SendMessageW(Handle, WM_APPCOMMAND, Handle, (IntPtr)APPCOMMAND_PREV);
+            _spotify.Previous();
         }
 
         private void VolUp()
